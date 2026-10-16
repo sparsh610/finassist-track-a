@@ -2,7 +2,7 @@
 
 Fine-tune a 7–8B open model to answer financial-report questions in a fixed JSON
 format, add retrieval, measure everything against a frozen test set, and serve it
-with vLLM behind FastAPI. Full write-up: `../Track_A_Implementation.docx`.
+with vLLM behind FastAPI. Full write-up: `docs/Track_A_Implementation.docx`.
 
 ## Quick start (no GPU needed)
 ```bash
