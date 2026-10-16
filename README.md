@@ -12,6 +12,13 @@ pytest -q                                          # 16 tests, no model weights
 python -m finassist.cli prepare                    # Week 1 dataset: 1,500 train / 200 test / 1,000 pages
 ```
 
+## Real (7B) runs on Colab
+Open `notebooks/colab_track_a.ipynb` in Colab
+([link](https://colab.research.google.com/github/sparsh610/finassist-track-a/blob/main/notebooks/colab_track_a.ipynb)),
+pick a T4 GPU runtime and *Run all*. Outputs go to Google Drive, so after a session ends,
+rerun all cells and the pipeline resumes. The repo is private: add a read-only
+`GITHUB_TOKEN` in Colab's Secrets panel.
+
 ## Compute profiles (`configs/compute.yaml`)
 | Profile | Where | Model | Use |
 |---|---|---|---|
