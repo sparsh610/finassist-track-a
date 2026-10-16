@@ -12,3 +12,4 @@ mlruns/
 llama.cpp/
 *.egg-info/
 notebooks/.ipynb_checkpoints/
+~$*
