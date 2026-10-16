@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+data/raw/
+outputs/
+wandb/
+mlruns/
+*.gguf
+*.safetensors
+.env
+llama.cpp/
+*.egg-info/
+notebooks/.ipynb_checkpoints/

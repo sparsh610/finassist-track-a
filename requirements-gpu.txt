@@ -1,0 +1,18 @@
+# Model stack for baseline, training, DPO, RAG, eval and merge.
+# The training code was smoke-tested with transformers 5.19.0, peft 0.21.2,
+# trl 1.0.0 and sentence-transformers 6.1.0. qlora.py also supports TRL < 0.20.
+# Note: TRL >= ~1.10 uses a Triton-only fused loss head, which works on Linux
+# GPUs (Kaggle, Colab, IIT box) but not on Windows; trl==1.0.0 avoids it.
+# vLLM is NOT installed here: it runs in its own container (serving/docker-compose.yml).
+# AWQ quantisation needs an older transformers: use requirements-quant.txt in a separate venv.
+-r requirements.txt
+torch>=2.5
+transformers==5.19.0
+peft==0.21.2
+trl==1.0.0
+accelerate>=1.1
+bitsandbytes>=0.45
+datasets>=3.1
+sentence-transformers==6.1.0
+wandb>=0.18
+mlflow>=2.18

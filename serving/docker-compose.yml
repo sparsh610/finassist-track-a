@@ -1,0 +1,41 @@
+# Week 4 deployment: vLLM (GPU) + FastAPI gateway.
+#   cd serving && docker compose up -d
+#   curl -X POST localhost:8080/v1/answer -H "content-type: application/json" \
+#        -d '{"question":"What was the percentage change in net revenue from 2008 to 2009?","document":"ADI annual report (10-K), fiscal 2009, page 49"}'
+services:
+  vllm:
+    image: vllm/vllm-openai:v0.6.4.post1
+    command: >
+      --model /models/awq
+      --quantization awq
+      --served-model-name finassist
+      --max-model-len 4096
+      --gpu-memory-utilization 0.85
+    volumes:
+      - ../outputs/quantized:/models:ro
+      - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
+    ports: ["8000:8000"]
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      retries: 20
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: serving/Dockerfile
+    environment:
+      VLLM_URL: http://vllm:8000/v1
+      SERVED_MODEL: finassist
+      FINASSIST_COMPUTE: smoke   # gateway itself is CPU-only
+      FINASSIST_RAG: "1"
+    volumes:
+      - ../outputs/index:/app/outputs/index:ro
+    ports: ["8080:8080"]
+    depends_on:
+      vllm:
+        condition: service_healthy

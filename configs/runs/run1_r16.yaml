@@ -1,0 +1,15 @@
+# Run 1: conservative QLoRA, all linear projections, rank 16.
+run_name: run1_r16_lr2e-4
+train:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+  learning_rate: 2.0e-4
+  num_epochs: 3
+  per_device_batch_size: 4
+  grad_accum_steps: 4
+  max_seq_length: 2048
+  warmup_ratio: 0.03
+  lr_scheduler: cosine
+  completion_only_loss: true

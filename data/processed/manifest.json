@@ -1,0 +1,23 @@
+{
+  "seed": 42,
+  "counts": {
+    "train": 1500,
+    "test": 200,
+    "corpus_documents": 1000
+  },
+  "sha256": {
+    "train.jsonl": "5e897ec668d3df476feacb36a6f902db6f5ff0fc1f84cbf85732cdb46ac7fd32",
+    "test.jsonl": "37becd87ef0d80c54c0f567611698169488faaa5322867bd65bf3510e99f22e3",
+    "documents.jsonl": "d49d7d609e23611377e66b0a545980ca92755ddf1767e20c7b59764f767c9110"
+  },
+  "sources": {
+    "finqa": {
+      "train_url": "https://raw.githubusercontent.com/czyssrs/FinQA/main/dataset/train.json",
+      "test_url": "https://raw.githubusercontent.com/czyssrs/FinQA/main/dataset/test.json"
+    },
+    "tatqa": {
+      "train_url": "https://raw.githubusercontent.com/NExTplusplus/TAT-QA/master/dataset_raw/tatqa_dataset_train.json",
+      "test_url": "https://raw.githubusercontent.com/NExTplusplus/TAT-QA/master/dataset_raw/tatqa_dataset_dev.json"
+    }
+  }
+}

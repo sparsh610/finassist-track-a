@@ -1,0 +1,58 @@
+# Where heavy jobs (baseline, training, eval, quantisation) run.
+# Pick a profile with `--compute <name>` or by setting `active` below.
+# Moving to the IIT GPU machine later = fill in the `iit_ssh` block and set
+# `active: iit_ssh`. No code changes are needed.
+
+active: smoke
+
+profiles:
+  # Laptop CPU, 0.5B stand-in model, 20 train / 10 test examples.
+  # Proves every stage runs end to end before GPU time is spent.
+  smoke:
+    kind: local
+    model_override: smoke_id
+    limit_train: 20
+    limit_test: 10
+    load_in_4bit: false
+    device: cpu
+    tracking: none       # no W&B login needed for smoke runs
+    # Laptop-sized training: same code path, tiny batch, short sequences.
+    train_overrides:
+      per_device_batch_size: 1
+      grad_accum_steps: 2
+      max_seq_length: 2048
+      num_epochs: 1
+    # A handful of pairs is enough to prove the DPO path on CPU.
+    dpo_overrides:
+      n_pairs: 8
+      samples_per_prompt: 2
+      per_device_batch_size: 1
+      grad_accum_steps: 2
+
+  # Same machine, full data, real model. Only useful if a local GPU exists.
+  local_gpu:
+    kind: local
+    load_in_4bit: true
+    device: cuda
+
+  # Free cloud notebook (Kaggle 2x T4 / Colab T4). Run scripts/bootstrap_notebook.sh
+  # in the first cell, then call the same CLI commands. 7B QLoRA fits on a 16 GB T4.
+  notebook:
+    kind: local
+    load_in_4bit: true
+    device: cuda
+    workdir: /kaggle/working/track_a
+
+  # IIT-provided GPU machine. Fill in once access is issued.
+  iit_ssh:
+    kind: ssh
+    host: CHANGE_ME.iit.ac.in
+    user: CHANGE_ME
+    port: 22
+    identity_file: ~/.ssh/id_ed25519
+    remote_dir: ~/finassist/track_a
+    python: ~/finassist/.venv/bin/python
+    load_in_4bit: true
+    device: cuda
+    # Folders copied back after each remote job.
+    pull_back: [outputs, data/processed]

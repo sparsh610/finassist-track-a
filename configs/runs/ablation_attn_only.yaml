@@ -1,0 +1,16 @@
+# Ablation: identical to run 1 except LoRA on attention projections only.
+# Answers "do the MLP adapters matter for numeric reasoning + schema?"
+run_name: ablation_attn_only_r16
+train:
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+  learning_rate: 2.0e-4
+  num_epochs: 3
+  per_device_batch_size: 4
+  grad_accum_steps: 4
+  max_seq_length: 2048
+  warmup_ratio: 0.03
+  lr_scheduler: cosine
+  completion_only_loss: true

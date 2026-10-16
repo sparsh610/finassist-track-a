@@ -1,0 +1,9 @@
+# Separate venv for `finassist.cli quantize --method awq` only.
+# AutoAWQ is no longer maintained and pins transformers 4.4x, so it cannot share
+# the training environment. Run merge first (training env), then:
+#   python -m venv .venv-quant && .venv-quant/bin/pip install -r requirements-quant.txt
+#   .venv-quant/bin/python -m finassist.cli quantize --method awq
+-r requirements.txt
+torch==2.5.1
+transformers==4.47.1
+autoawq==0.2.7.post3

@@ -1,0 +1,6 @@
+# LF everywhere: shell scripts must run on Linux (Colab, Kaggle, IIT box).
+* text=auto eol=lf
+# Frozen data is hashed in data/processed/manifest.json: keep bytes exact.
+*.jsonl -text
+*.json -text
+*.png binary

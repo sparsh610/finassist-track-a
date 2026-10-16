@@ -1,0 +1,14 @@
+# Optional stretch (only if Week 2 finished cleanly): DPO on top of the best SFT adapter.
+run_name: dpo_on_best
+dpo:
+  sft_adapter_dir: outputs/adapters/run1_r16_lr2e-4
+  n_pairs: 250
+  beta: 0.1
+  learning_rate: 5.0e-6
+  num_epochs: 1
+  per_device_batch_size: 2
+  grad_accum_steps: 8
+  # Rejected answers are sampled from the SFT model at this temperature and kept
+  # only when they fail the metric; chosen = the gold answer.
+  sample_temperature: 0.9
+  samples_per_prompt: 4

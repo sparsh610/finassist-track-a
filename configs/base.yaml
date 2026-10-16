@@ -1,0 +1,69 @@
+# Shared settings for every Track A stage. Stage configs (configs/runs/*.yaml)
+# are merged on top of this file, so only overrides need to live there.
+
+project: finassist-track-a
+seed: 42
+
+model:
+  # Any <=8B instruct model. Swap to meta-llama/Llama-3.1-8B-Instruct once the
+  # GPU box is available (needs an HF token with the Llama licence accepted).
+  base_id: Qwen/Qwen2.5-7B-Instruct
+  # Tiny stand-in used by the `smoke` compute profile so the whole pipeline can
+  # be exercised on a laptop CPU before any GPU time is spent.
+  smoke_id: Qwen/Qwen2.5-0.5B-Instruct
+  max_new_tokens: 384
+  temperature: 0.0
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  sources:
+    finqa:
+      train_url: https://raw.githubusercontent.com/czyssrs/FinQA/main/dataset/train.json
+      test_url: https://raw.githubusercontent.com/czyssrs/FinQA/main/dataset/test.json
+      n_train: 1000
+      n_test: 120
+    tatqa:
+      train_url: https://raw.githubusercontent.com/NExTplusplus/TAT-QA/master/dataset_raw/tatqa_dataset_train.json
+      test_url: https://raw.githubusercontent.com/NExTplusplus/TAT-QA/master/dataset_raw/tatqa_dataset_dev.json
+      n_train: 500
+      n_test: 80
+  # Training prompts include the gold evidence ("oracle context") so the model
+  # learns the reasoning + output schema; the RAG layer supplies context at test time.
+  max_context_chars: 6000
+
+rag:
+  corpus_dir: data/corpus
+  index_dir: outputs/index
+  max_documents: 1000
+  chunking:
+    strategy: table_aware   # table_aware | fixed
+    text_chunk_words: 180
+    text_overlap_words: 40
+    table_rows_per_chunk: 12
+  embedding_model: BAAI/bge-small-en-v1.5
+  reranker_model: BAAI/bge-reranker-base
+  top_k_retrieve: 20
+  top_k_rerank: 4
+  filter_by_document_meta: true   # restrict to the company/year named in the query
+
+tracking:
+  backend: wandb          # wandb | mlflow | none
+  wandb_project: finassist-track-a
+  mlflow_uri: file:./outputs/mlruns
+
+judge:
+  # Any OpenAI-compatible endpoint. A larger model than the one being judged.
+  base_url: https://api.groq.com/openai/v1
+  model: llama-3.3-70b-versatile
+  api_key_env: JUDGE_API_KEY
+
+serving:
+  merged_dir: outputs/merged
+  quantized_dir: outputs/quantized
+  quantization: awq       # awq | gguf | none
+  vllm_url: http://localhost:8000/v1
+  served_model_name: finassist
+  # Schema-constrained decoding (response_format json_schema) on vLLM / Ollama:
+  # guarantees parseable JSON and caps `source` length on the served model.
+  constrained_decoding: true
